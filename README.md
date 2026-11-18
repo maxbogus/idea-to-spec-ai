@@ -25,8 +25,12 @@
 
 ## Оглавление
 
+> Карта проекта для агентов и людей — `AGENTS.md` (структура, пайплайн,
+> роли, команды, требования к окружению).
+
 | Файл | Назначение |
 |---|---|
+| `AGENTS.md` | **карта проекта**: структура, пайплайн, роли, команды, требования |
 | `transcript-breakdown.md` | разбор исходного транскрипта: тезисы, термины, план спикера |
 | `workshop-plan.md` | план на 120 минут: блоки, упражнения, факапы, буфер |
 | `architecture.md` | роли, оркестратор, режимы auto/chat/hybrid, артефакты, правила |
@@ -41,8 +45,8 @@
 | `skills/*.md` | скилы — повторяемые процедуры (источники, персоны, противоречия, расчёты) |
 | `subagents/fact-check.md` | субагент проверки оснований перед Spec-gate |
 | `handout-index.md` | сквозная таблица синхронизации роль → методы → скилы → артефакт → гейт |
-| `templates/*.md` | шаблоны артефактов (включая `cjm.md` — карту пути клиента) |
-| `templates/*.mmd` | скелеты Mermaid-диаграмм (use case, sequence, ER, DFD, C4 C1–C4, BPMN, activity, gantt) |
+| `templates/*.md` | шаблоны артефактов (включая `jtbd.md` — работы, `cjm.md` — карту пути клиента) |
+| `templates/*.mmd` | скелеты Mermaid-диаграмм (use case — нативный `usecase-beta` с человечками, sequence, ER, DFD 0–3, C4 C1–C4, BPMN, activity, gantt) |
 | `templates/*.bpmn` | канонический BPMN 2.0 XML (bpmn.io / Camunda) |
 | `templates/mermaid-config.json` | детерминированный рендер Mermaid |
 | `exercises/*.md` | упражнения и домашние задания |
@@ -61,20 +65,22 @@
 
 ## Как пользоваться
 
-1. Прочитать `workshop-plan.md` и `transcript-breakdown.md`.
-2. Стартовать пробный прогон: вставить сырую идею в `prompts/start.md` — он
+1. Проверить окружение: `make setup` (node, `mmdc >= 12.0.0`, make).
+2. Прочитать `workshop-plan.md` и `transcript-breakdown.md`.
+3. Стартовать пробный прогон: вставить сырую идею в `prompts/start.md` — он
    либо развернёт каркас в `output/<run-id>/`, либо пойдёт в диалоге.
-3. Прогнать демо по `agenda/part1-before-spec.md` с промптами из `prompts/`.
-4. Сверить роль → метод → скил → артефакт → гейт по `handout-index.md`.
-5. Раздать участникам `exercises/`, `templates/`, `methods/`, `skills/`.
-6. Держать под рукой `faq-fuckups.md` на случай сбоя демо.
-7. Передать `agenda/part2-handoff.md` второму спикеру.
+4. Прогнать демо по `agenda/part1-before-spec.md` с промптами из `prompts/`.
+5. Сверить роль → метод → скил → артефакт → гейт по `handout-index.md`.
+6. Раздать участникам `exercises/`, `templates/`, `methods/`, `skills/`.
+7. Держать под рукой `faq-fuckups.md` на случай сбоя демо.
+8. Передать `agenda/part2-handoff.md` второму спикеру.
 
 ## Команды (Makefile)
 
 | Команда | Что делает |
 |---|---|
 | `make help` | список целей |
+| `make setup` | проверить окружение: node, `mmdc >= 12.0.0`, make |
 | `make scaffold RUN=auto-002` | развернуть каркас прогона из `templates/` в `output/auto-002/` |
 | `make render RUN=auto-002` | отрендерить `output/auto-002/diagrams/*.mmd` → PNG |
 | `make render-all` | отрендерить диаграммы всех прогонов |
@@ -89,4 +95,6 @@
 | `make clean-png` | удалить отрендеренные PNG (source остаются) |
 | `make clean-run RUN=auto-002 CONFIRM=yes` | удалить прогон (защищено от случайного запуска) |
 
-Рендер требует `mmdc` (`npm i -g @mermaid-js/mermaid-cli`).
+Рендер требует `@mermaid-js/mermaid-cli >= 12.0.0` — нативная версия нужна
+для use case-диаграмм (`usecase-beta`): `npm i -g @mermaid-js/mermaid-cli@^12`.
+Проверка окружения: `make setup`.

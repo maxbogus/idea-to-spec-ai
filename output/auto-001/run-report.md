@@ -23,11 +23,14 @@
 - `validation-report.md`
 - `hallucination-log.md`
 - `cjm.md`
+- `jtbd.md`
 - `diagrams/use-case.mmd`
 - `diagrams/sequence.mmd`
 - `diagrams/er.mmd`
 - `diagrams/dfd-context.mmd`
-- `diagrams/dfd-decomposition.mmd`
+- `diagrams/dfd-level1.mmd`
+- `diagrams/dfd-level2.mmd`
+- `diagrams/dfd-level3.mmd`
 - `diagrams/c4-context.mmd`
 - `diagrams/c4-container.mmd`
 - `diagrams/c4-component.mmd`

@@ -21,7 +21,7 @@ OUT="$ROOT/output/$RUN_ID"
 
 mkdir -p "$OUT/diagrams"
 
-artifacts="brief open-questions personas business-requirements functional-requirements nonfunctional-requirements use-cases spec traceability-matrix risk-register human-oversight-plan validation-report hallucination-log cjm"
+artifacts="brief open-questions personas jtbd business-requirements functional-requirements nonfunctional-requirements use-cases spec traceability-matrix risk-register human-oversight-plan validation-report hallucination-log cjm"
 
 created=0
 skipped=0

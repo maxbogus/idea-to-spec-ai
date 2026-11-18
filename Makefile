@@ -4,11 +4,12 @@ SHELL := /bin/bash
 RUN ?= auto-001
 OUT_ROOT ?= output
 MMDC ?= mmdc
+MMDC_MIN ?= 12.0.0
 MERMAID_CFG ?= templates/mermaid-config.json
 CONFIRM ?=
 SCRIPTS := $(CURDIR)/scripts
 
-.PHONY: help scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start
+.PHONY: help setup check-prereqs scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start
 
 help: ## Показать список целей
 	@echo "Использование: make <target> [RUN=<id>]"
@@ -16,6 +17,11 @@ help: ## Показать список целей
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-16s %s\n", $$1, $$2}'
 	@echo ""
 	@echo "Переменные: RUN=$(RUN) OUT_ROOT=$(OUT_ROOT)"
+
+setup: check-prereqs ## Первичная настройка: проверить окружение (node, mmdc >= MMDC_MIN)
+
+check-prereqs: ## Проверить node, mmdc >= MMDC_MIN, make
+	@MMDC_MIN="$(MMDC_MIN)" bash $(SCRIPTS)/check-prereqs.sh
 
 scaffold: ## Развернуть каркас прогона: make scaffold RUN=auto-002
 	@bash $(SCRIPTS)/scaffold-run.sh "$(RUN)"
@@ -35,7 +41,7 @@ render-all: ## Отрендерить диаграммы всех прогоно
 	done; \
 	if [ $$found -eq 0 ]; then echo "Нет прогонов с диаграммами в $(OUT_ROOT)/"; fi
 
-check: check-refs check-fences check-diagrams check-bpmn check-sync ## Полная проверка раздатки и диаграмм
+check: check-prereqs check-refs check-fences check-diagrams check-bpmn check-sync ## Полная проверка раздатки и диаграмм
 
 check-refs: ## Проверить, что все ссылки на md/mmd резолвятся
 	@ok=1; \

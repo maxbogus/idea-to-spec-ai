@@ -10,7 +10,8 @@ Design и Plan.
 
 Диаграмма строится **из тех же ID**, что и требования:
 
-- Use Case: узлы = `UC-*` из `use-cases.md`;
+- JTBD: job stories `J-*` из `jtbd.md` (отвечают на «зачем», источник для UC и CJM);
+- Use Case: узлы = `UC-*` из `use-cases.md` (актор = человечек, `usecase-beta`);
 - Sequence: шаги того же `UC-*`;
 - ER: данные из `spec.md §6`;
 - C4 / Component: компоненты и интеграции из `spec.md §9`;
@@ -25,12 +26,14 @@ Design и Plan.
 
 | Источник | Диаграмма | Файл | Роль |
 |---|---|---|---|
-| `personas.md` + `use-cases.md` + user flow | CJM | `cjm.md` | Designer |
-| `use-cases.md` (`UC-*`) | Use Case | `diagrams/use-case.mmd` | SA |
+| `personas.md` + `jtbd.md` + `use-cases.md` + user flow | CJM | `cjm.md` | Designer |
+| `use-cases.md` (`UC-*`) × `jtbd.md` (`J-*`) | Use Case (`usecase-beta`) | `diagrams/use-case.mmd` | SA |
 | шаги `UC-*` | Sequence | `diagrams/sequence.mmd` | SA |
 | `spec.md §6` данные | ER | `diagrams/er.mmd` | SA |
 | `personas.md` + `spec.md §6/§9` | DFD L0 (контекст) | `diagrams/dfd-context.mmd` | SA |
-| `spec.md §9` процессы и данные | DFD L1 (декомпозиция) | `diagrams/dfd-decomposition.mmd` | SA |
+| `spec.md §9` процессы и данные | DFD L1 (декомпозиция) | `diagrams/dfd-level1.mmd` | SA |
+| `spec.md §9` один процесс из L1 | DFD L2 (под-процессы) | `diagrams/dfd-level2.mmd` | SA |
+| `spec.md §9` один под-процесс из L2 | DFD L3 (шаги) | `diagrams/dfd-level3.mmd` | SA |
 | `spec.md §9` система и внешние | C4 C1 Context | `diagrams/c4-context.mmd` | Architect |
 | `spec.md §9` контейнеры | C4 C2 Container | `diagrams/c4-container.mmd` | Architect |
 | `spec.md §9` модули API | C4 C3 Component | `diagrams/c4-component.mmd` | Architect |
@@ -41,13 +44,15 @@ Design и Plan.
 
 ## Форматы
 
-- **Mermaid** (`.mmd`) — всё, что рендерится `mmdc`: C4 (`C4Context`,
+- **Mermaid** (`.mmd`) — всё, что рендерится `mmdc`: use case (`usecase-beta`,
+  Mermaid >= 12.0.0; актор — человечек, use case — овал), C4 (`C4Context`,
   `C4Container`, `C4Component`, `C4Deployment`), DFD (`flowchart` с
   `classDef external/process/storage`), BPMN-приближение (`flowchart`).
 - **BPMN 2.0 XML** (`.bpmn`) — канонический формат для bpmn.io / Camunda.
   `mmdc` его не рендерит; валидируется как XML (`make check-bpmn`).
-- **DFD** — уровни 0 (контекст) и 1 (декомпозиция); нотация ГОСТ 2.701 /
-  ISO 5807 (по мотивам `telemetry`).
+- **DFD** — уровни 0 (контекст) и 1–3 (декомпозиция): L1 — система →
+  процессы, L2 — процесс → под-процессы, L3 — под-процесс → шаги; нотация
+  ГОСТ 2.701 / ISO 5807 (по мотивам `telemetry`).
 - **C4** — C1 Context / C2 Container / C3 Component / C4 Deployment (по
   мотивам `architectureKata`).
 
@@ -64,7 +69,7 @@ Design и Plan.
    существующие узлы.
 4. **Отрендери PNG** (опционально):
    `mmdc -i diagrams/use-case.mmd -o diagrams/use-case.png -b white`.
-   Нужен `@mermaid-js/mermaid-cli`. Если CLI нет — source `.mmd` валиден сам
+   Нужен `@mermaid-js/mermaid-cli` **>= 12.0.0** (для `usecase-beta`). Если CLI нет — source `.mmd` валиден сам
    по себе, PNG генерится позже.
 5. **Добавь обратную ссылку** на диаграмму в артефакт-источник (в `spec.md`
    или `cjm.md`) для трассируемости.
@@ -77,7 +82,8 @@ CJM — таблица этапов с эмоциями и болями плюс
 - внизу — mermaid `flowchart LR` с этапами;
 - 2–3 строки нарратива от лица персоны (как `user-journey-alexey.md`).
 
-CJM обязана опираться на конкретную персону из `personas.md` и её `UC-*`.
+CJM обязана опираться на конкретную персону из `personas.md`, её JTBD из
+`jtbd.md` и `UC-*` из `use-cases.md`.
 
 ## Метрики / проверка
 

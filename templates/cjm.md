@@ -1,6 +1,6 @@
 # CJM — карта пути клиента
 
-> Строится из `personas.md` + `use-cases.md` + user flow (см.
+> Строится из `personas.md` + `jtbd.md` + `use-cases.md` + user flow (см.
 > `skills/diagram-generation.md`).
 > Персона: **P-? «…»**. Контур: …
 
@@ -28,4 +28,5 @@ flowchart LR
 ## Источники
 
 - Персона: `personas.md` (P-?)
+- Работы: `jtbd.md` (J-?)
 - Сценарии: `use-cases.md` (UC-?)

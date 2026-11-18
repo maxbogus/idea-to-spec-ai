@@ -43,6 +43,7 @@ output/<run-id>/
   brief.md
   open-questions.md
   personas.md
+  jtbd.md
   business-requirements.md
   functional-requirements.md
   nonfunctional-requirements.md

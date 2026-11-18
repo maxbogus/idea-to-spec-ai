@@ -7,12 +7,21 @@
 
 ## Шаг 0. Режим
 
-Спроси пользователя, если он не указал режим в самой идее:
+Спроси пользователя, если он не указал режим в самой идее. Вопрос — по
+формату из Шага 4 (три блока: вопрос / зачем / термины):
 
-> «В каком режиме работаем: `auto` (без вопросов, всё неизвестное —
-> допущения), `chat` (спрашиваю по ходу, не больше 3 вопросов за гейт) или
-> `hybrid` (вопросы только на критичных развилках: контур, пользователи,
-> платежи, интеграции)?»
+> **Вопрос:** «В каком режиме работаем: `auto` (без вопросов, всё
+> неизвестное — допущения), `chat` (спрашиваю по ходу, не больше 3
+> вопросов за гейт) или `hybrid` (вопросы только на критичных развилках:
+> контур, пользователи, платежи, интеграции)?»
+>
+> **Зачем я это спрашиваю:** режим определяет, сколько допущений появится
+> без вашего участия и где вы будете валидировать. Ошибка здесь — либо
+> молчаливые галлюцинации (`auto`), либо лишние вопросы.
+>
+> **Термины:** `auto` — ИИ решает сам; `chat` — диалог; `hybrid` — диалог
+> только на развилках. «Контур» — границы продукта по типу клиента и
+> географии (см. «Глоссарий терминов» в `prompts/rules.md`).
 
 Если ответа нет и режим не указан — по умолчанию `auto` и явно это
 сообщи.
@@ -33,6 +42,7 @@ output/<run-id>/
   brief.md
   open-questions.md
   personas.md
+  jtbd.md
   business-requirements.md
   functional-requirements.md
   nonfunctional-requirements.md
@@ -49,7 +59,9 @@ output/<run-id>/
     sequence.mmd
     er.mmd
     dfd-context.mmd
-    dfd-decomposition.mmd
+    dfd-level1.mmd
+    dfd-level2.mmd
+    dfd-level3.mmd
     c4-context.mmd
     c4-container.mmd
     c4-component.mmd
@@ -62,7 +74,7 @@ output/<run-id>/
 
 `<run-id>` = `auto-001` / `chat-001` / `hybrid-001` (или дата-время).
 Файлы создаются из `templates/` (для `brief.md` — `brief-template.md`, для
-`spec.md` — `spec-template.md`, CJM — `cjm.md`, диаграммы — `*.mmd`,
+`spec.md` — `spec-template.md`, JTBD — `jtbd.md`, CJM — `cjm.md`, диаграммы — `*.mmd`,
 остальные — одноимённые) и заполняются по мере прохождения этапов. В `auto`
 создаются все; в `chat`/`hybrid` можно создавать по этапу, но структура та же.
 
@@ -75,7 +87,7 @@ RUN=<run-id>` (скрипт `scripts/render-diagrams.sh`).
 | Этап | Роль + промпт | Метод / скил | Артефакт | Гейт |
 |---|---|---|---|---|
 | Intake | `prompts/orchestrator.md` | бриф | `brief.md`, `open-questions.md` | — |
-| Business | `prompts/roles/product-manager.md`, `prompts/roles/business-analyst.md` | `methods/variants.md`, `methods/strategy-and-verification.md`, `skills/collect-sources.md`, `skills/mock-respondents.md` | `personas.md`, `business-requirements.md` | **BA-gate** (`prompts/rules.md`) |
+| Business | `prompts/roles/product-manager.md`, `prompts/roles/business-analyst.md` | `methods/variants.md`, `methods/strategy-and-verification.md`, `skills/collect-sources.md`, `skills/mock-respondents.md` | `personas.md`, `jtbd.md`, `business-requirements.md` | **BA-gate** (`prompts/rules.md`) |
 | System | `prompts/roles/system-analyst.md` | `methods/fact-hypothesis-forecast.md`, `skills/detect-contradictions.md`, `skills/analyze-data.md` | `use-cases.md`, `functional-requirements.md`, `nonfunctional-requirements.md` | **SA-gate** |
 | Architecture | `prompts/roles/architect.md` | `methods/decision-keeper.md`, `skills/detect-contradictions.md` | `spec.md` (архитектурные ссылки) | — |
 | Validation | `subagents/fact-check.md` | `methods/fact-hypothesis-forecast.md` | `validation-report.md`, `hallucination-log.md` | **Spec-gate** |
@@ -88,9 +100,11 @@ RUN=<run-id>` (скрипт `scripts/render-diagrams.sh`).
 ## Шаг 3a. Диаграммы
 
 Диаграммы строятся из тех же ID, что и требования (см.
-`skills/diagram-generation.md`): use case — из `UC-*`, sequence — из шагов UC,
-ER и DFD — из `spec.md §6/§9`, C4 (C1–C4) — из §9, BPMN — из ключевого UC,
-Gantt — из roadmap, CJM — из персон и UC.
+`skills/diagram-generation.md`): JTBD — из `personas.md` (в `jtbd.md`);
+use case — из `UC-*` (нативные `usecase-beta`, актор = человечек; нужен
+`mermaid-cli >= 12.0.0`); sequence — из шагов UC, ER и DFD (L0–L3) — из
+`spec.md §6/§9`, C4 (C1–C4) — из §9, BPMN — из ключевого UC,
+Gantt — из roadmap, CJM — из персон × JTBD × UC.
 Файлы — в `output/<run-id>/diagrams/` (`*.mmd`; канонический BPMN —
 `bpmn-process.bpmn`). Скелеты — `templates/*.mmd` и `templates/*.bpmn`.
 PNG рендерится опционально: `mmdc -i x.mmd -o x.png -b white`.
@@ -104,6 +118,18 @@ PNG рендерится опционально: `mmdc -i x.mmd -o x.png -b whit
   следующий шаг. Ответы вставляешь в артефакты до перехода дальше.
 - **`hybrid`** — вопросы только на развилках: контур, пользователи,
   платежи, интеграции.
+
+### Формат каждого вопроса
+
+Каждый вопрос задаёшь тремя блоками (как в референсном интервью):
+
+1. **Вопрос** — конкретный, можно с микро-подсказками.
+2. **Зачем я это спрашиваю** — 2–4 предложения: что этим закрываем, какой
+   риск снижаем, что появится на выходе.
+3. **Термины** — расшифровка терминов из вопроса (формулировки — из
+   «Глоссария терминов» в `prompts/rules.md`).
+
+Правило действует для любого вопроса, включая Шаг 0.
 
 ## Шаг 5. Формат каждого шага
 
