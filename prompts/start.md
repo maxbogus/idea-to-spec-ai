@@ -47,8 +47,14 @@ output/<run-id>/
     use-case.mmd
     sequence.mmd
     er.mmd
+    dfd-context.mmd
+    dfd-decomposition.mmd
     c4-context.mmd
     c4-container.mmd
+    c4-component.mmd
+    c4-deployment.mmd
+    bpmn-process.mmd
+    bpmn-process.bpmn
     activity.mmd
     gantt.mmd
 ```
@@ -78,8 +84,10 @@ output/<run-id>/
 
 Диаграммы строятся из тех же ID, что и требования (см.
 `skills/diagram-generation.md`): use case — из `UC-*`, sequence — из шагов UC,
-ER — из `spec.md §6`, C4 — из §9, Gantt — из roadmap, CJM — из персон и UC.
-Файлы — в `output/<run-id>/diagrams/*.mmd` (скелеты — `templates/*.mmd`).
+ER и DFD — из `spec.md §6/§9`, C4 (C1–C4) — из §9, BPMN — из ключевого UC,
+Gantt — из roadmap, CJM — из персон и UC.
+Файлы — в `output/<run-id>/diagrams/` (`*.mmd`; канонический BPMN —
+`bpmn-process.bpmn`). Скелеты — `templates/*.mmd` и `templates/*.bpmn`.
 PNG рендерится опционально: `mmdc -i x.mmd -o x.png -b white`.
 
 ## Шаг 4. Поведение по режимам

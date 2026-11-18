@@ -26,8 +26,14 @@
 - `diagrams/use-case.mmd`
 - `diagrams/sequence.mmd`
 - `diagrams/er.mmd`
+- `diagrams/dfd-context.mmd`
+- `diagrams/dfd-decomposition.mmd`
 - `diagrams/c4-context.mmd`
 - `diagrams/c4-container.mmd`
+- `diagrams/c4-component.mmd`
+- `diagrams/c4-deployment.mmd`
+- `diagrams/bpmn-process.mmd`
+- `diagrams/bpmn-process.bpmn`
 - `diagrams/activity.mmd`
 - `diagrams/gantt.mmd`
 

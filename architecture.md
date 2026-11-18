@@ -55,6 +55,7 @@ output/<run-id>/
   hallucination-log.md
   cjm.md
   diagrams/*.mmd
+  diagrams/*.bpmn
 ```
 
 Шаблоны — в `templates/`.

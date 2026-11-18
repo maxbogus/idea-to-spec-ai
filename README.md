@@ -42,7 +42,9 @@
 | `subagents/fact-check.md` | субагент проверки оснований перед Spec-gate |
 | `handout-index.md` | сквозная таблица синхронизации роль → методы → скилы → артефакт → гейт |
 | `templates/*.md` | шаблоны артефактов (включая `cjm.md` — карту пути клиента) |
-| `templates/*.mmd` | скелеты Mermaid-диаграмм (use case, sequence, ER, C4, activity, gantt) |
+| `templates/*.mmd` | скелеты Mermaid-диаграмм (use case, sequence, ER, DFD, C4 C1–C4, BPMN, activity, gantt) |
+| `templates/*.bpmn` | канонический BPMN 2.0 XML (bpmn.io / Camunda) |
+| `templates/mermaid-config.json` | детерминированный рендер Mermaid |
 | `exercises/*.md` | упражнения и домашние задания |
 | `faq-fuckups.md` | факапы, fallback, буфер |
 

@@ -26,12 +26,33 @@ Design и Plan.
 | Источник | Диаграмма | Файл | Роль |
 |---|---|---|---|
 | `personas.md` + `use-cases.md` + user flow | CJM | `cjm.md` | Designer |
-| `use-cases.md` | Use Case | `diagrams/use-case.mmd` | SA |
+| `use-cases.md` (`UC-*`) | Use Case | `diagrams/use-case.mmd` | SA |
 | шаги `UC-*` | Sequence | `diagrams/sequence.mmd` | SA |
 | `spec.md §6` данные | ER | `diagrams/er.mmd` | SA |
-| `spec.md §9` компоненты | C4 context + container | `diagrams/c4-context.mmd`, `diagrams/c4-container.mmd` | Architect |
-| ключевой поток | Activity | `diagrams/activity.mmd` | Architect |
+| `personas.md` + `spec.md §6/§9` | DFD L0 (контекст) | `diagrams/dfd-context.mmd` | SA |
+| `spec.md §9` процессы и данные | DFD L1 (декомпозиция) | `diagrams/dfd-decomposition.mmd` | SA |
+| `spec.md §9` система и внешние | C4 C1 Context | `diagrams/c4-context.mmd` | Architect |
+| `spec.md §9` контейнеры | C4 C2 Container | `diagrams/c4-container.mmd` | Architect |
+| `spec.md §9` модули API | C4 C3 Component | `diagrams/c4-component.mmd` | Architect |
+| `spec.md §9` + зоны доверия | C4 C4 Deployment | `diagrams/c4-deployment.mmd` | Architect |
+| ключевой `UC-*` | BPMN 2.0 (визуал + XML) | `diagrams/bpmn-process.mmd`, `bpmn-process.bpmn` | SA |
+| ключевой поток (упрощённо) | Activity | `diagrams/activity.mmd` | Architect |
 | `roadmap` | Gantt | `diagrams/gantt.mmd` | PM |
+
+## Форматы
+
+- **Mermaid** (`.mmd`) — всё, что рендерится `mmdc`: C4 (`C4Context`,
+  `C4Container`, `C4Component`, `C4Deployment`), DFD (`flowchart` с
+  `classDef external/process/storage`), BPMN-приближение (`flowchart`).
+- **BPMN 2.0 XML** (`.bpmn`) — канонический формат для bpmn.io / Camunda.
+  `mmdc` его не рендерит; валидируется как XML (`make check-bpmn`).
+- **DFD** — уровни 0 (контекст) и 1 (декомпозиция); нотация ГОСТ 2.701 /
+  ISO 5807 (по мотивам `telemetry`).
+- **C4** — C1 Context / C2 Container / C3 Component / C4 Deployment (по
+  мотивам `architectureKata`).
+
+Детерминированный рендер: `templates/mermaid-config.json`
+(`deterministicIds: true`), передаётся в `mmdc` через `-c`.
 
 ## Что делать
 

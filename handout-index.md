@@ -36,12 +36,21 @@
 | `use-cases.md` (`UC-*`) | Use Case | `diagrams/use-case.mmd` |
 | шаги `UC-*` | Sequence | `diagrams/sequence.mmd` |
 | `spec.md §6` данные | ER | `diagrams/er.mmd` |
-| `spec.md §9` компоненты | C4 context / container | `diagrams/c4-context.mmd`, `c4-container.mmd` |
-| ключевой поток | Activity | `diagrams/activity.mmd` |
+| `personas.md` + `spec.md §6/§9` | DFD L0 (контекст) | `diagrams/dfd-context.mmd` |
+| `spec.md §9` процессы и данные | DFD L1 (декомпозиция) | `diagrams/dfd-decomposition.mmd` |
+| `spec.md §9` система и внешние | C4 C1 Context | `diagrams/c4-context.mmd` |
+| `spec.md §9` контейнеры | C4 C2 Container | `diagrams/c4-container.mmd` |
+| `spec.md §9` модули API | C4 C3 Component | `diagrams/c4-component.mmd` |
+| `spec.md §9` + зоны доверия | C4 C4 Deployment | `diagrams/c4-deployment.mmd` |
+| ключевой `UC-*` | BPMN 2.0 | `diagrams/bpmn-process.mmd`, `bpmn-process.bpmn` |
+| ключевой поток (упрощённо) | Activity | `diagrams/activity.mmd` |
 | `roadmap` | Gantt | `diagrams/gantt.mmd` |
 
-Рендер (опционально): `mmdc -i x.mmd -o x.png -b white`. PNG не коммитится
-по умолчанию — только source `.mmd`.
+Форматы: `.mmd` — Mermaid (C4, DFD, BPMN-приближение, activity, gantt),
+рендерится `mmdc`; `.bpmn` — канонический BPMN 2.0 XML для bpmn.io/Camunda,
+валидируется как XML (`make check-bpmn`). Рендер (опционально):
+`mmdc -i x.mmd -o x.png -b white -c templates/mermaid-config.json`.
+PNG не коммитится по умолчанию — только source `.mmd`.
 
 ## Проверка синхронизации
 
