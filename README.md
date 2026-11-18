@@ -82,6 +82,8 @@
 | `make check-refs` | проверить, что все ссылки на md/mmd резолвятся |
 | `make check-fences` | проверить парность code-fences во всех `.md` |
 | `make check-diagrams` | проверить синтаксис всех `.mmd` рендером в temp |
+| `make check-bpmn` | проверить, что `.bpmn` — well-formed XML |
+| `make check-sync` | проверить, что скилы/шаблоны/скрипты используются и режимы описаны |
 | `make list-runs` | список прогонов в `output/` |
 | `make start` | показать стартовый промпт `prompts/start.md` |
 | `make clean-png` | удалить отрендеренные PNG (source остаются) |

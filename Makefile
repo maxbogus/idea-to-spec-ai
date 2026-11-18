@@ -8,7 +8,7 @@ MERMAID_CFG ?= templates/mermaid-config.json
 CONFIRM ?=
 SCRIPTS := $(CURDIR)/scripts
 
-.PHONY: help scaffold render render-all check check-refs check-fences check-diagrams check-bpmn list-runs clean-png clean-run start
+.PHONY: help scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start
 
 help: ## Показать список целей
 	@echo "Использование: make <target> [RUN=<id>]"
@@ -35,7 +35,7 @@ render-all: ## Отрендерить диаграммы всех прогоно
 	done; \
 	if [ $$found -eq 0 ]; then echo "Нет прогонов с диаграммами в $(OUT_ROOT)/"; fi
 
-check: check-refs check-fences check-diagrams check-bpmn ## Полная проверка раздатки и диаграмм
+check: check-refs check-fences check-diagrams check-bpmn check-sync ## Полная проверка раздатки и диаграмм
 
 check-refs: ## Проверить, что все ссылки на md/mmd резолвятся
 	@ok=1; \
@@ -76,6 +76,9 @@ check-bpmn: ## Проверить, что .bpmn — well-formed XML
 	done; \
 	if [ $$found -eq 0 ]; then echo "check-bpmn: нет .bpmn"; exit 0; fi; \
 	if [ $$ok -eq 1 ]; then echo "check-bpmn: OK"; else echo "check-bpmn: FAILED" >&2; exit 1; fi
+
+check-sync: ## Проверить, что скилы/шаблоны/скрипты используются и режимы описаны
+	@bash $(SCRIPTS)/check-sync.sh
 
 list-runs: ## Список прогонов в output/
 	@ls -1 $(OUT_ROOT) 2>/dev/null || echo "нет прогонов"

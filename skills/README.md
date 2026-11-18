@@ -26,6 +26,7 @@
 | `mock-respondents.md` | Модельные персоны с маркировкой синтетики | BA, Designer | P1 |
 | `detect-contradictions.md` | Поиск противоречий между требованиями | SA, Architect | P0 |
 | `analyze-data.md` | Воспроизводимые расчёты и метрики с базой | PM, SA | P2 |
+| `diagram-generation.md` | Диаграммы как производные артефакты: CJM, C4, DFD, BPMN, ER, sequence, gantt | SA, Architect, Designer, PM | P0 |
 
 > Скил добавляется, только если он уменьшает число немаркированных
 > допущений. «Больше агентов и скилов» само по себе — не преимущество.
