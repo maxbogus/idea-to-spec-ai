@@ -67,3 +67,22 @@
 5. Раздать участникам `exercises/`, `templates/`, `methods/`, `skills/`.
 6. Держать под рукой `faq-fuckups.md` на случай сбоя демо.
 7. Передать `agenda/part2-handoff.md` второму спикеру.
+
+## Команды (Makefile)
+
+| Команда | Что делает |
+|---|---|
+| `make help` | список целей |
+| `make scaffold RUN=auto-002` | развернуть каркас прогона из `templates/` в `output/auto-002/` |
+| `make render RUN=auto-002` | отрендерить `output/auto-002/diagrams/*.mmd` → PNG |
+| `make render-all` | отрендерить диаграммы всех прогонов |
+| `make check` | полная проверка: ссылки + code-fences + рендер всех `.mmd` |
+| `make check-refs` | проверить, что все ссылки на md/mmd резолвятся |
+| `make check-fences` | проверить парность code-fences во всех `.md` |
+| `make check-diagrams` | проверить синтаксис всех `.mmd` рендером в temp |
+| `make list-runs` | список прогонов в `output/` |
+| `make start` | показать стартовый промпт `prompts/start.md` |
+| `make clean-png` | удалить отрендеренные PNG (source остаются) |
+| `make clean-run RUN=auto-002 CONFIRM=yes` | удалить прогон (защищено от случайного запуска) |
+
+Рендер требует `mmdc` (`npm i -g @mermaid-js/mermaid-cli`).
