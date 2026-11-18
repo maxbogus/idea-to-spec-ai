@@ -9,6 +9,13 @@
 3. Фиксируешь архитектурные решения (ADR).
 4. Планируешь наблюдаемость и testability.
 5. Связываешь риски с мерами контроля.
+6. Строишь C4 (context/container) и activity-диаграмму ключевого потока.
+
+## Скилы и методы
+
+- `methods/decision-keeper.md` — условие пересмотра ADR.
+- `skills/detect-contradictions.md` — противоречия в интеграциях.
+- `skills/diagram-generation.md` — C4 и activity.
 
 ## Чего ты НЕ делаешь
 

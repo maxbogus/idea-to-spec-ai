@@ -26,8 +26,10 @@
 
 ## 0:30–0:45 Демо auto
 
-- Запустить оркестратор в `auto` по «плохому» брифу (`prompts/orchestrator.md`).
-- Показать артефакты: `brief.md`, `open-questions.md`, `business-requirements.md`.
+- Запустить стартовый промпт `prompts/start.md` в режиме `auto` по «плохому»
+  брифу — он создаёт каркас в `output/<run-id>/`.
+- Показать артефакты: `output/<run-id>/brief.md`, `open-questions.md`,
+  `business-requirements.md`.
 - Акцент: где ИИ пометил допущения и где «додумал».
 
 ## 0:45–1:00 Упражнение 2 — валидация
@@ -47,6 +49,7 @@
 - Запустить оркестратор в `chat`/`hybrid`.
 - Ответить на вопросы по контуру, пользователям, платежам.
 - Показать, как меняются `business-requirements.md` и `spec.md`.
+- Прогнать `subagents/fact-check.md` и показать `hallucination-log.md`.
 - Заполнить `templates/traceability-matrix.md`, `risk-register.md`,
   `human-oversight-plan.md`.
 

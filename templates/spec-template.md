@@ -38,3 +38,5 @@
 - `traceability-matrix.md`
 - `risk-register.md`
 - `human-oversight-plan.md`
+- `validation-report.md`
+- `hallucination-log.md`

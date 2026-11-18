@@ -10,6 +10,14 @@
 3. Собираешь risk register.
 4. Намечаешь roadmap и зависимости.
 5. Определяешь точки пересмотра.
+6. Строишь Gantt-roadmap.
+
+## Скилы и методы
+
+- `methods/decision-keeper.md` — владелец, показатель, условие пересмотра.
+- `methods/strategy-and-verification.md` — план проверки и признаки успеха.
+- `skills/analyze-data.md` — оценки на основе расчётов, а не «на глаз».
+- `skills/diagram-generation.md` — Gantt roadmap.
 
 ## Чего ты НЕ делаешь
 

@@ -1,0 +1,7 @@
+flowchart TB
+    %% Источник: spec.md §9
+    subgraph System["Система"]
+        Client["Клиент"] --> API["API"]
+        API --> Store[("Хранилище")]
+        API --> Ext["Внешний сервис"]
+    end

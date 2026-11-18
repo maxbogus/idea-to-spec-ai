@@ -1,0 +1,9 @@
+flowchart TB
+    %% Источник: spec.md §9 (компоненты)
+    subgraph System["Мем-приложение"]
+        Client["Web/мобильный клиент"] --> API["API-сервис"]
+        API --> Store[("Медиа-хранилище")]
+        API --> PayAdapter["Платёжный адаптер"]
+        API --> Moderation["Модерация"]
+    end
+    PayAdapter --> Pay["Платёжный провайдер"]

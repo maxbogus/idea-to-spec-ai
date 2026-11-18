@@ -33,10 +33,16 @@
 | `standards-mapping.md` | наложение SDLC/PDLC и стандартов США / ЕС / РФ |
 | `agenda/part1-before-spec.md` | часть 1 — от идеи до спецификации |
 | `agenda/part2-handoff.md` | «крючки» передачи второму спикеру |
+| `prompts/start.md` | **стартовый промпт**: одна точка входа — `auto` → каркас в `output/`, либо диалог |
 | `prompts/orchestrator.md` | промпт оркестратора |
 | `prompts/rules.md` | система правил для всех ролей |
 | `prompts/roles/*.md` | ролевые промпты (6 ролей) |
-| `templates/*.md` | шаблоны артефактов |
+| `methods/*.md` | методики (навыки): факт/гипотеза/прогноз, варианты, стратегия, decision-keeper |
+| `skills/*.md` | скилы — повторяемые процедуры (источники, персоны, противоречия, расчёты) |
+| `subagents/fact-check.md` | субагент проверки оснований перед Spec-gate |
+| `handout-index.md` | сквозная таблица синхронизации роль → методы → скилы → артефакт → гейт |
+| `templates/*.md` | шаблоны артефактов (включая `cjm.md` — карту пути клиента) |
+| `templates/*.mmd` | скелеты Mermaid-диаграмм (use case, sequence, ER, C4, activity, gantt) |
 | `exercises/*.md` | упражнения и домашние задания |
 | `faq-fuckups.md` | факапы, fallback, буфер |
 
@@ -54,7 +60,10 @@
 ## Как пользоваться
 
 1. Прочитать `workshop-plan.md` и `transcript-breakdown.md`.
-2. Прогнать демо по `agenda/part1-before-spec.md` с промптами из `prompts/`.
-3. Раздать участникам `exercises/` и `templates/`.
-4. Держать под рукой `faq-fuckups.md` на случай сбоя демо.
-5. Передать `agenda/part2-handoff.md` второму спикеру.
+2. Стартовать пробный прогон: вставить сырую идею в `prompts/start.md` — он
+   либо развернёт каркас в `output/<run-id>/`, либо пойдёт в диалоге.
+3. Прогнать демо по `agenda/part1-before-spec.md` с промптами из `prompts/`.
+4. Сверить роль → метод → скил → артефакт → гейт по `handout-index.md`.
+5. Раздать участникам `exercises/`, `templates/`, `methods/`, `skills/`.
+6. Держать под рукой `faq-fuckups.md` на случай сбоя демо.
+7. Передать `agenda/part2-handoff.md` второму спикеру.
