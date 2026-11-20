@@ -8,8 +8,13 @@ MMDC_MIN ?= 12.0.0
 MERMAID_CFG ?= templates/mermaid-config.json
 CONFIRM ?=
 SCRIPTS := $(CURDIR)/scripts
+OLLAMA_URL ?= http://localhost:11434
+OLLAMA_MODEL ?= qwen2.5:7b
+# Двоеточие в имени модели недопустимо в путях: qwen2.5:7b -> qwen2.5-7b.
+OLLAMA_TAG ?= $(subst :,-,$(OLLAMA_MODEL))
+PROMPTFOO ?= ./node_modules/.bin/promptfoo
 
-.PHONY: help setup check-prereqs scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start
+.PHONY: help setup check-prereqs scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start eval-setup eval eval-mock test-eval lint-py
 
 help: ## Показать список целей
 	@echo "Использование: make <target> [RUN=<id>]"
@@ -45,7 +50,7 @@ check: check-prereqs check-refs check-fences check-diagrams check-bpmn check-syn
 
 check-refs: ## Проверить, что все ссылки на md/mmd резолвятся
 	@ok=1; \
-	for ref in $$(grep -rhoE '(prompts|methods|skills|subagents|templates)/[a-zA-Z0-9_*.-]+\.(md|mmd|bpmn|json)' . --include='*.md' --include='*.mmd' | sort -u); do \
+	for ref in $$(grep -rhoE '(prompts|methods|skills|subagents|templates)/[a-zA-Z0-9_*.-]+\.(md|mmd|bpmn|json)' . --include='*.md' --include='*.mmd' --exclude-dir=node_modules --exclude-dir=.venv --exclude-dir=.git | sort -u); do \
 	  case "$$ref" in *'*'*) continue;; esac; \
 	  if [ ! -f "$$ref" ]; then echo "MISSING: $$ref"; ok=0; fi; \
 	done; \
@@ -53,7 +58,7 @@ check-refs: ## Проверить, что все ссылки на md/mmd рез
 
 check-fences: ## Проверить парность ``` во всех .md
 	@ok=1; \
-	for f in $$(find . -path ./.git -prune -o -name '*.md' -print); do \
+	for f in $$(find . -name '*.md' -not -path './.git/*' -not -path './node_modules/*' -not -path './.venv/*'); do \
 	  n=$$(grep -c '^```' "$$f" || true); \
 	  if [ $$((n % 2)) -ne 0 ]; then echo "ODD FENCE: $$f ($$n)"; ok=0; fi; \
 	done; \
@@ -63,7 +68,7 @@ check-diagrams: ## Проверить синтаксис всех .mmd ренд�
 	@command -v $(MMDC) >/dev/null 2>&1 || { echo "ERROR: $(MMDC) не найден (npm i -g @mermaid-js/mermaid-cli)" >&2; exit 1; }; \
 	tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
 	ok=1; \
-	for f in $$(find . -path ./.git -prune -o -name '*.mmd' -print); do \
+	for f in $$(find . -name '*.mmd' -not -path './.git/*' -not -path './node_modules/*' -not -path './.venv/*'); do \
 	  name=$$(echo "$$f" | tr '/' '_'); \
 	  if $(MMDC) -i "$$f" -o "$$tmp/$${name%.mmd}.png" -b white >/dev/null 2>&1; then \
 	    echo "diagram OK: $$f"; \
@@ -74,7 +79,7 @@ check-diagrams: ## Проверить синтаксис всех .mmd ренд�
 check-bpmn: ## Проверить, что .bpmn — well-formed XML
 	@ok=1; \
 	found=0; \
-	for f in $$(find . -path ./.git -prune -o -name '*.bpmn' -print); do \
+	for f in $$(find . -name '*.bpmn' -not -path './.git/*' -not -path './node_modules/*' -not -path './.venv/*'); do \
 	  found=1; \
 	  if python3 -c "import sys, xml.etree.ElementTree as ET; ET.parse(sys.argv[1])" "$$f" 2>/dev/null; then \
 	    echo "bpmn OK: $$f"; \
@@ -112,3 +117,32 @@ clean-run: ## Удалить прогон (нужно CONFIRM=yes): make clean-r
 
 start: ## Показать стартовый промпт prompts/start.md
 	@cat prompts/start.md
+
+## Eval
+
+eval-setup: ## Установить зависимости eval (uv sync + npm install)
+	@uv sync --all-groups
+	@npm install --no-audit --no-fund
+	@echo "eval-setup: OK"
+
+test-eval: ## Прогнать pytest eval-контракты без реальной модели
+	@uv run pytest tests -q -m 'not slow'
+
+eval-mock: ## Детерминированный replay eval-кейсов без LLM (зелёный в CI)
+	@echo "==> pytest-контракты (mock)"
+	@uv run pytest tests -q -m mock
+	@echo "==> promptfoo replay (exec-провайдер, без сети)"
+	@$(PROMPTFOO) eval -c eval/promptfooconfig.mock.yaml --no-cache --no-progress-bar 2>&1 | tail -5
+
+eval: ## Прогнать eval-кейсы на локальной модели Ollama (модель — в eval/promptfooconfig.yaml)
+	@curl -sf $(OLLAMA_URL)/api/tags > /dev/null || { \
+	  echo "[FAIL] Ollama недоступен на $(OLLAMA_URL)"; exit 1; }
+	@echo "==> promptfoo против $(OLLAMA_MODEL)"
+	@mkdir -p docs/evaluation
+	@$(PROMPTFOO) eval -c eval/promptfooconfig.yaml --no-cache --no-progress-bar \
+	  -o docs/evaluation/eval-$(OLLAMA_TAG).json 2>&1 | tail -8 || true
+	@uv run python scripts/summarize_eval.py docs/evaluation/eval-$(OLLAMA_TAG).json
+
+lint-py: ## Линтинг Python eval-обвязки: ruff + mypy
+	@uv run ruff check scripts tests
+	@uv run mypy scripts tests

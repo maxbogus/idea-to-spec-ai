@@ -51,6 +51,10 @@
 | `templates/mermaid-config.json` | детерминированный рендер Mermaid |
 | `exercises/*.md` | упражнения и домашние задания |
 | `faq-fuckups.md` | факапы, fallback, буфер |
+| `eval/cases/roles.jsonl` | eval-кейсы промптов: контракты (поля, маркеры, режим) |
+| `eval/promptfooconfig*.yaml` | promptfoo: реальный прогон (Ollama) и детерминированный replay |
+| `scripts/promptfoo_transform.py`, `mock_provider.py`, `summarize_eval.py` | eval-обвязка |
+| `docs/evaluation/` | отчёты eval-прогонов и разбор находок |
 
 > Задачи реализации ведутся в TaskHub (проект `idea-to-spec-ai`); каталог
 > `ai/tasks/` удалён из репозитория после импорта.
@@ -94,7 +98,33 @@
 | `make start` | показать стартовый промпт `prompts/start.md` |
 | `make clean-png` | удалить отрендеренные PNG (source остаются) |
 | `make clean-run RUN=auto-002 CONFIRM=yes` | удалить прогон (защищено от случайного запуска) |
+| `make eval-setup` | поставить зависимости eval (`uv sync` + `npm install`) |
+| `make test-eval` | прогнать pytest-контракты eval без модели |
+| `make eval-mock` | детерминированный replay eval-кейсов без LLM |
+| `make eval` | реальный прогон eval на локальной модели Ollama |
+| `make lint-py` | ruff + mypy для eval-обвязки |
 
 Рендер требует `@mermaid-js/mermaid-cli >= 12.0.0` — нативная версия нужна
 для use case-диаграмм (`usecase-beta`): `npm i -g @mermaid-js/mermaid-cli@^12`.
 Проверка окружения: `make setup`.
+
+## Eval промптов
+
+Промпты проверяются автоматически — это ловит расхождение «промпт обещает
+одно, модель делает другое»:
+
+```bash
+make eval-setup   # один раз: uv sync + npm install (promptfoo)
+make eval-mock    # детерминированный replay, без LLM — всегда зелёный
+make eval         # реальный прогон на qwen2.5:7b через Ollama
+```
+
+- Кейсы — `eval/cases/roles.jsonl` (все 8 промптов: оркестратор, PM, BA, SA,
+  Architect, Designer, Project Manager, fact-check + дисциплина и негативные).
+  Контракт: обязательные поля, `must_contain` /
+  `must_not_contain`, дисциплина режима.
+- Отчёт — `docs/evaluation/eval-qwen2.5-7b.json`, сводка печатается
+  `scripts/summarize_eval.py`.
+- Провалы модели фиксируются как `xfail(strict=True)` в
+  `tests/test_eval_contract.py` (`KNOWN_MODEL_FAILURES`), а не маскируются.
+- Разбор находок — `docs/evaluation/README.md`.

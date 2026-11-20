@@ -1,0 +1,109 @@
+# promptfoo — реальный прогон ролей MVP на локальной модели Ollama.
+#
+# Внешние ключи НЕ требуются и не используются.
+# Запуск: make eval
+#
+# Assertions только детерминированные (contains / not-contains / regex):
+# LLM-as-judge не используется — он сделал бы прогон невоспроизводимым.
+#
+# Промпт роли берётся из файлов-источников через transformVars
+# (scripts/promptfoo_transform.py): prompts/roles/<role>.md, prompts/rules.md.
+# Тексты промптов не дублируются в этом файле.
+
+description: "idea-to-spec-ai — роли MVP (оркестратор, PM, BA, SA) на локальной модели"
+
+env:
+  OLLAMA_BASE_URL: http://localhost:11434
+
+providers:
+  - id: ollama:chat:qwen2.5:7b
+    label: qwen2.5-7b-local
+    config:
+      temperature: 0
+      num_predict: 2000
+      top_p: 1
+
+prompts:
+  - id: role-turn
+    raw: |
+      Ты выполняешь роль мультиагентной системы «идея → спецификация».
+      Режим работы: {{mode}}. Роль: {{role}}.
+
+      ПРОМПТ РОЛИ:
+      {{role_prompt}}
+
+      ОБЩИЕ ПРАВИЛА (обязательны для всех ролей):
+      {{rules}}
+
+      ВХОД:
+      {{input}}
+
+      Отвечай на русском языке. Верни ответ строго в формате роли. Каждое
+      утверждение без источника помечай как допущение или гипотезу, а не как факт.
+
+defaultTest:
+  options:
+    # Трансформ собирает промпт роли из файлов prompts/ и подмешивает вход
+    # кейса. Без него шаблон получил бы пустые role_prompt/rules/input, и
+    # метрики eval были бы недостоверны.
+    transformVars: file://../scripts/promptfoo_transform.py
+  assert:
+    - type: javascript
+      value: |
+        // Полный контракт кейса из eval/cases/roles.jsonl.
+        // Проверяются: must_contain, must_not_contain, expected_fields,
+        // дисциплина режима (auto/chat/hybrid).
+        let contract = {};
+        try { contract = JSON.parse(context.vars.contract || '{}'); } catch (e) { contract = {}; }
+        const out = output || '';
+        const lower = out.toLowerCase();
+        const problems = [];
+
+        for (const needle of (contract.must_contain || [])) {
+          if (!lower.includes(String(needle).toLowerCase())) {
+            problems.push(`must_contain отсутствует: "${needle}"`);
+          }
+        }
+        for (const needle of (contract.must_not_contain || [])) {
+          if (lower.includes(String(needle).toLowerCase())) {
+            problems.push(`must_not_contain присутствует: "${needle}"`);
+          }
+        }
+        for (const field of (contract.expected_fields || [])) {
+          if (!(out.includes(`"${field}"`) || out.includes(`${field}:`))) {
+            problems.push(`нет обязательного поля: ${field}`);
+          }
+        }
+
+        // Ответ должен быть на русском: кириллица обязательна. Иначе модель
+        // уходит в другой язык (наблюдалось у qwen: китайский), и ответ
+        // непригоден для воркшопа, даже если поля формально на месте.
+        const cyrillic = (out.match(/[А-Яа-яЁё]/g) || []).length;
+        if (cyrillic < 20) problems.push('ответ не на русском языке (нет кириллицы)');
+
+        const count = (s, sub) => s.split(sub).length - 1;
+        const modeCheck = contract.mode_check;
+        if (modeCheck === 'auto_no_questions') {
+          if (out.includes('Зачем я это спрашиваю')) {
+            problems.push('auto: задан вопрос, хотя auto = 0 вопросов');
+          }
+        } else if (modeCheck === 'chat_three_blocks') {
+          for (const block of ['Вопрос', 'Зачем я это спрашиваю', 'Термины']) {
+            if (!out.includes(block)) problems.push(`chat: нет блока "${block}"`);
+          }
+          if (count(out, 'Вопрос') > 3) problems.push('chat: больше 3 вопросов за гейт');
+        } else if (modeCheck === 'hybrid_forks_only') {
+          if (out.includes('Вопрос')) {
+            const forks = ['контур', 'пользовател', 'платеж', 'интеграц'];
+            if (!forks.some((f) => lower.includes(f))) {
+              problems.push('hybrid: вопрос не про критичную развилку');
+            }
+          }
+        }
+
+        if (problems.length === 0) {
+          return { pass: true, score: 1, reason: 'контракт выполнен' };
+        }
+        return { pass: false, score: 0, reason: problems.join('; ') };
+
+tests: file://./cases/roles.jsonl

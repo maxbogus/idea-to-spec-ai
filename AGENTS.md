@@ -105,7 +105,20 @@ Intake (оркестратор)
 │   ├── check-prereqs.sh    preflight: node, mmdc >= 12, make, config
 │   ├── scaffold-run.sh     развернуть output/<run-id>/ из templates/
 │   ├── render-diagrams.sh  .mmd → .png через mmdc
-│   └── check-sync.sh       связность скилов/шаблонов/скриптов/режимов
+│   ├── check-sync.sh       связность скилов/шаблонов/скриптов/режимов
+│   ├── promptfoo_transform.py  собрать промпт роли для eval
+│   ├── mock_provider.py        детерминированные ответы (eval-mock)
+│   └── summarize_eval.py       метрики eval-прогона
+│
+├── eval/                   eval промптов (promptfoo)
+│   ├── cases/roles.jsonl   кейсы: ORCH, PM, BA, SA, ARCH, DESIGN, PROJ, FC + DISC/NEG
+│   ├── promptfooconfig.yaml       реальный прогон (Ollama qwen2.5:7b)
+│   └── promptfooconfig.mock.yaml  детерминированный replay (без LLM)
+│
+├── tests/                  pytest-контракты eval (mock + slow xfail)
+├── docs/evaluation/        отчёты eval и разбор находок
+├── package.json            promptfoo (devDependency)
+├── pyproject.toml          uv + pytest + ruff + mypy
 │
 └── output/                 прогоны (артефакты + диаграммы)
     └── auto-001/           демо-прогон (auto)
@@ -141,6 +154,11 @@ make check-bpmn            # well-formed XML для .bpmn
 make check-sync            # скилы/шаблоны/скрипты используются, режимы описаны
 make list-runs             # прогоны в output/
 make start                 # показать prompts/start.md
+make eval-setup            # uv sync + npm install (зависимости eval)
+make test-eval             # pytest-контракты eval без модели
+make eval-mock             # детерминированный replay eval (без LLM)
+make eval                  # реальный прогон eval на Ollama (qwen2.5:7b)
+make lint-py               # ruff + mypy для eval-обвязки
 make clean-png             # удалить PNG (source .mmd остаются)
 make clean-run RUN=x CONFIRM=yes  # удалить прогон (защищено от случайного запуска)
 ```
@@ -152,10 +170,24 @@ make clean-run RUN=x CONFIRM=yes  # удалить прогон (защищен�
 | `node` | 18+ | рантайм для mermaid-cli |
 | `@mermaid-js/mermaid-cli` (`mmdc`) | **>= 12.0.0** | рендер `usecase-beta` (actors = человечки) |
 | `make` | GNU make | команды |
+| `uv` | >= 0.5 | Python-зависимости eval (pytest, ruff, mypy) |
+| `npm` | 18+ | promptfoo для eval (`make eval-setup`) |
+| Ollama + `qwen2.5:7b` | — | реальный прогон `make eval` |
 
 Проверка: **`make setup`** (`scripts/check-prereqs.sh`). Если `mmdc` ниже 12 —
 рендер use case-диаграмм упадёт. Обновление:
 `npm i -g @mermaid-js/mermaid-cli@^12`.
+
+## Eval промптов
+
+- Обвязка: `eval/` (кейсы + конфиги promptfoo), `scripts/*.py`, `tests/`.
+- Кейсы хранят контракт: обязательные поля, `must_contain` / `must_not_contain`,
+  дисциплина режима (`auto`/`chat`/`hybrid`), маркеры допущений.
+- `make eval-mock` — детерминированный replay (без LLM, зелёный).
+- `make eval` — реальный прогон на `qwen2.5:7b`; отчёт в `docs/evaluation/`.
+- Провалы модели фиксируются как `xfail(strict=True)` (`KNOWN_MODEL_FAILURES`),
+  а не маскируются. Внезапный XPASS — сигнал обновить список.
+- Находки первого прогона — `docs/evaluation/README.md`.
 
 ## Соглашения и типичные ошибки
 
