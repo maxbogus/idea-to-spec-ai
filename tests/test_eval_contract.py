@@ -136,8 +136,8 @@ def _mode_problems(case: dict[str, Any], output: str) -> list[str]:
 
 
 def test_eval_set_has_expected_size() -> None:
-    """Набор содержит 20 кейсов: MVP + Architect/Designer/Project Manager/fact-check."""
-    assert len(CASES) == 20, f"Ожидалось 20 кейсов, получено {len(CASES)}"
+    """Набор содержит 23 кейса: MVP + A/D/PM/fact-check + DISC-дисциплина."""
+    assert len(CASES) == 23, f"Ожидалось 23 кейса, получено {len(CASES)}"
     by_scenario: dict[str, int] = {}
     for case in CASES:
         scenario = str(case["scenario"])
@@ -147,7 +147,7 @@ def test_eval_set_has_expected_size() -> None:
         "PM": 2,
         "BA": 2,
         "SA": 2,
-        "DISC": 1,
+        "DISC": 4,
         "NEG": 2,
         "ARCH": 2,
         "DESIGN": 2,

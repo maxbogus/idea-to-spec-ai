@@ -54,6 +54,7 @@ output/<run-id>/
   validation-report.md
   hallucination-log.md
   cjm.md
+  run-report.md
   diagrams/
     use-case.mmd
     sequence.mmd
@@ -74,7 +75,7 @@ output/<run-id>/
 
 `<run-id>` = `auto-001` / `chat-001` / `hybrid-001` (или дата-время).
 Файлы создаются из `templates/` (для `brief.md` — `brief-template.md`, для
-`spec.md` — `spec-template.md`, JTBD — `jtbd.md`, CJM — `cjm.md`, диаграммы — `*.mmd`,
+`spec.md` — `spec-template.md`, JTBD — `jtbd.md`, CJM — `cjm.md`, итог — `run-report.md`, диаграммы — `*.mmd` и `*.bpmn`,
 остальные — одноимённые) и заполняются по мере прохождения этапов. В `auto`
 создаются все; в `chat`/`hybrid` можно создавать по этапу, но структура та же.
 

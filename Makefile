@@ -14,7 +14,7 @@ OLLAMA_MODEL ?= qwen2.5:7b
 OLLAMA_TAG ?= $(subst :,-,$(OLLAMA_MODEL))
 PROMPTFOO ?= ./node_modules/.bin/promptfoo
 
-.PHONY: help setup check-prereqs scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync list-runs clean-png clean-run start eval-setup eval eval-mock test-eval lint-py
+.PHONY: help setup check-prereqs scaffold render render-all check check-refs check-fences check-diagrams check-bpmn check-sync check-run list-runs clean-png clean-run start eval-setup eval eval-mock test-eval lint-py
 
 help: ## Показать список целей
 	@echo "Использование: make <target> [RUN=<id>]"
@@ -90,6 +90,9 @@ check-bpmn: ## Проверить, что .bpmn — well-formed XML
 
 check-sync: ## Проверить, что скилы/шаблоны/скрипты используются и режимы описаны
 	@bash $(SCRIPTS)/check-sync.sh
+
+check-run: ## Проверить согласованность прогона: make check-run RUN=auto-002
+	@python3 $(SCRIPTS)/check_run.py "$(OUT_ROOT)/$(RUN)"
 
 list-runs: ## Список прогонов в output/
 	@ls -1 $(OUT_ROOT) 2>/dev/null || echo "нет прогонов"

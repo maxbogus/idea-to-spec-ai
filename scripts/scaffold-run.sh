@@ -21,7 +21,7 @@ OUT="$ROOT/output/$RUN_ID"
 
 mkdir -p "$OUT/diagrams"
 
-artifacts="brief open-questions personas jtbd business-requirements functional-requirements nonfunctional-requirements use-cases spec traceability-matrix risk-register human-oversight-plan validation-report hallucination-log cjm"
+artifacts="brief open-questions personas jtbd business-requirements functional-requirements nonfunctional-requirements use-cases spec traceability-matrix risk-register human-oversight-plan validation-report hallucination-log cjm run-report"
 
 created=0
 skipped=0
@@ -47,6 +47,17 @@ done
 
 shopt -s nullglob
 for f in "$TPL"/*.mmd; do
+  dst="$OUT/diagrams/$(basename "$f")"
+  if [ -e "$dst" ]; then
+    skipped=$((skipped + 1))
+  else
+    cp "$f" "$dst"
+    created=$((created + 1))
+  fi
+done
+
+# Канонический BPMN 2.0 XML копируется отдельно: templates/*.mmd его не покрывает.
+for f in "$TPL"/*.bpmn; do
   dst="$OUT/diagrams/$(basename "$f")"
   if [ -e "$dst" ]; then
     skipped=$((skipped + 1))

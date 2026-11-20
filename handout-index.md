@@ -16,7 +16,7 @@
 
 | Роль | Промпт | Методы (навыки) | Скилы | Артефакты | Гейт |
 |---|---|---|---|---|---|
-| Оркестратор | `prompts/orchestrator.md` | все (диспетчер) | все (диспетчер) | `brief.md`, `open-questions.md`, отчёт | — |
+| Оркестратор | `prompts/orchestrator.md` | все (диспетчер) | все (диспетчер) | `brief.md`, `open-questions.md`, `run-report.md` (итоговый отчёт) | — |
 | Product Manager | `prompts/roles/product-manager.md` | `variants.md`, `strategy-and-verification.md`, `decision-keeper.md` | `collect-sources.md`, `analyze-data.md` | `business-requirements.md` (ценность, варианты) | BA-gate |
 | Business Analyst | `prompts/roles/business-analyst.md` | `fact-hypothesis-forecast.md` | `mock-respondents.md`, `collect-sources.md` | `personas.md`, `jtbd.md`, `business-requirements.md` | BA-gate |
 | System Analyst | `prompts/roles/system-analyst.md` | `fact-hypothesis-forecast.md` | `detect-contradictions.md`, `analyze-data.md`, `diagram-generation.md` | `use-cases.md`, `functional-requirements.md`, `nonfunctional-requirements.md`, `spec.md`, `diagrams/use-case.mmd`, `sequence.mmd`, `er.mmd`, `dfd-context.mmd`, `dfd-level1.mmd`, `dfd-level2.mmd`, `dfd-level3.mmd` | SA-gate |

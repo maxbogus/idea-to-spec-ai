@@ -40,7 +40,7 @@ ignore = [
 "tests/*" = ["S101"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["idea_to_spec", "mock_provider", "promptfoo_transform", "summarize_eval"]
+known-first-party = ["check_run", "idea_to_spec", "mock_provider", "promptfoo_transform", "summarize_eval"]
 
 [tool.ruff.format]
 quote-style = "double"
